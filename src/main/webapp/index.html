@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+<!--  -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+<title>Angular App</title>
+</head>
+<body>
+	<h3>Welcome To Index Page</h3>
+	<!-- <div ng-controller="Ctrl1">
+	{{a}}
+	</div> -->
+	<a href="#!addReg">Register</a> |
+	<a href="#!displayAll">Display All Users</a> |
+	<!-- <a href="#!displayOne/1">Display One Users</a> |
+	<a href="#!edit/1">Edit User</a> |
+	<a href="#!deleteUser">Delete User</a> -->
+	<hr>
+	<div ng-view class="container"></div>
+	<hr>
+	@User Model
+
+	<!-- Scripts Files - load at Runtime -->
+	<script src="js/bootstrap/jquery.min.js"></script>
+	<script src="js/bootstrap/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/angularjs/angular.js"></script>
+	<script type="text/javascript" src="js/angularjs/angular-route.js"></script>
+	<script src="js/angularjs/angular-animate.js"></script>
+	<script type="text/javascript" src="js/app/emp/empApp.js"></script>
+</body>
+</html>

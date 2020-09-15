@@ -1,0 +1,68 @@
+<div ng-controller="viewAllCtrl">
+	<!-- For Employee Table Data ====ng-hide="!hideform"-->
+	<div style="margin: 2.5%; width: 45%; float: left;">
+		<h3>List of Employees</h3>
+
+		<table class="table table-responsive">
+			<tr>
+				<th>Sr.No.</th>
+				<th>Name</th>
+				<th>Dept</th>
+				<th>Salary</th>
+				<th>Status</th>
+				<th>Operations</th>
+			</tr>
+			<tr ng-repeat="emp in emps">
+				<td>{{ $index + 1 }}</td>
+				<td>{{emp.name}}</td>
+				<td>{{emp.dept}}</td>
+				<td>{{emp.salary}}</td>
+				<td>
+					<div ng-if="emp.status==0"
+						ng-click="changeStatus(emp.id,emp.status);" class="btn btn-danger">Inactive</div>
+					<div ng-if="emp.status==1"
+						ng-click="changeStatus(emp.id,emp.status);"
+						class="btn btn-success">Active</div>
+				</td>
+				<td>
+					<button ng-click="edit(emp.id);" class="btn btn-primary">Edit</button>
+					<!-- <button ng-click="deleteEmp(emp.id);" class="btn btn-primary">Delete</span></button> -->
+				</td>
+			</tr>
+		</table>
+		
+		{{viewAllCtrl.msg}}
+	</div>
+
+
+	<!-- For Employee Edit Form -->
+	<div ng-hide="hideform" style="margin: 2.5%; width: 45%; float: left;">
+		<div class="card">
+			<h3>Employee Edit Form</h3>
+
+			<form action="#" novalidate>
+				<div class="form-group">
+					<label>Name:</label> <input type="text" ng-model="emp.name"
+						class="form-control">
+				</div>
+				<div class="form-group">
+					<label>Dept:</label> <select ng-model="emp.dept"
+						class="form-control">
+						<option value="">Select One Dept</option>
+						<option value="DEV">DEV</option>
+						<option value="QA">QA</option>
+						<option value="HR">HR</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label>Salary:</label> <input type="number" ng-model="emp.salary"
+						class="form-control">
+				</div>
+				<input type="button" ng-click="editEmp();" class="btn btn-primary"
+					value="Edit">
+				<p ng-click="cancelEditEmp();" class="btn btn-info">Cancel</p>
+			</form>
+		</div>
+	</div>
+
+</div>
