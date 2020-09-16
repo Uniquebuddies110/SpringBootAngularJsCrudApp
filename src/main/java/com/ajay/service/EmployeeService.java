@@ -7,9 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ajay.entity.Employee;
+import com.ajay.model.Payload;
 import com.ajay.repo.EmployeeRepo;
 
 @Service
@@ -53,11 +55,12 @@ public class EmployeeService {
 	 * @param employee
 	 * @return String
 	 */
-	public String saveEmployee(Employee employee) {
+	public Payload saveEmployee(Employee employee) {
 		log.info("EmployeeService.saveEmployee()");
 		employee.setStatus(1);
 		employee = employeeRepo.save(employee);
-		return "Employee '" + employee.getName() + "' has Added successfully.";
+		String msg= "Employee '" + employee.getName() + "' has Added successfully.";
+		return new Payload(msg, HttpStatus.OK, null);
 	}
 
 	/**
