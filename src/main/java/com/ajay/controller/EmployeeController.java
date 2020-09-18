@@ -35,7 +35,7 @@ public class EmployeeController {
 	 */
 	@GetMapping("/getAll")
 	@ResponseBody
-	public List<Employee> getAllEmps() {
+	public Payload getAllEmps() {
 		log.info("EmployeeController.getAllEmps()");
 		return employeeService.getAllEmployees();
 	}
@@ -49,7 +49,7 @@ public class EmployeeController {
 	 */
 	@GetMapping("/getAll/{id}")
 	@ResponseBody
-	public Employee getAllEmps(@PathVariable Integer id) throws Exception {
+	public Payload getAllEmps(@PathVariable Integer id) throws Exception {
 		log.info("EmployeeController.getAllEmps()");
 		return employeeService.getEmpById(id);
 	}
@@ -76,15 +76,14 @@ public class EmployeeController {
 	 */
 	@PutMapping("/update")
 	@ResponseBody
-	public String updateEmployee(@RequestBody Employee employee) throws Exception {
+	public Payload updateEmployee(@RequestBody Employee employee) throws Exception {
 		log.info("EmployeeController.updateEmployee()");
 		return employeeService.updateEmployee(employee);
 	}
 
-	
 	@PutMapping("/changeStatus/{id}")
 	@ResponseBody
-	public String changeStatusOfEmployee(@PathVariable Integer id) throws Exception {
+	public Payload changeStatusOfEmployee(@PathVariable Integer id) throws Exception {
 		log.info("EmployeeController.updateEmployee()");
 		return employeeService.changeStatus(id);
 	}
@@ -98,7 +97,7 @@ public class EmployeeController {
 	 */
 	@DeleteMapping("/delete/{id}")
 	@ResponseBody
-	public String deleteEmployee(@PathVariable Integer id) throws Exception {
+	public Payload deleteEmployee(@PathVariable Integer id) throws Exception {
 		log.info("EmployeeController.deleteEmployee()");
 		return employeeService.deleteEmployee(id);
 	}
@@ -107,7 +106,7 @@ public class EmployeeController {
 //	public String homePage() {
 //		return "/page/Home";
 //	}
-	
+
 //	@RequestMapping("/index")
 //	public String indexView() {
 //		return "Index";

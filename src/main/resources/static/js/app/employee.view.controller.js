@@ -1,9 +1,9 @@
 angular.module('MyApp').controller('viewAllCtrl',viewAllCtrl);
 
-viewAllCtrl.$inject=['$scope','EmployeeService'];
+viewAllCtrl.$inject=['$scope','$http','$route','$timeout','EmployeeService'];
 
-function viewAllCtrl($scope, EmployeeService){
-	
+function viewAllCtrl($scope,$http, $route,$timeout,EmployeeService){
+	$scope.payload={};
 	$scope.emps=[];
 	$scope.msg="";
 	$scope.hideform = true;
@@ -33,17 +33,37 @@ function viewAllCtrl($scope, EmployeeService){
 	    $scope.filteredItems = $scope.emps.slice(begin, end); 
 	  }); */
 	
-	/* For Edit Functionality */
+	/* Fetching data for Edit Functionality */
 	$scope.edit= function(id){
 		$scope.hideform = false;
 		$scope.emp={};
 		EmployeeService.getEmpById($scope,id);
 	}
-	
+	/* For Update Employee Data*/
 	$scope.editEmp= function(){
-		EmployeeService.updateEmp($scope);
-		toastr.info('success : '+$scope.msg);
-		window.location.reload();
+		/*EmployeeService.updateEmp($scope);*/
+		$http.put('/emp/api/update', $scope.emp).then(function successCallback(response){
+			var respData=response.data;
+			
+			if(respData.status=='OK'){ // responseStatus=OK
+				toastr.info(respData.message);
+				console.log("Successfully fetch");
+			}else if(respData.status=='INTERNAL_SERVER_ERROR'){ // responseStatus=INTERNAL_SERVER_ERROR
+				toastr.error(respData.message);
+				console.log("NOT FOUND");
+			}
+			
+			$scope.hideform = true;
+		}, function errorCallback(response){
+			$scope.msg=response.data.status;
+			$scope.hideform = true;
+		});
+
+		$timeout(function() {
+			/*window.location.reload();*/
+			$route.reload();
+		}, 1000);
+		
 	}
 	
 	/* For Cancel Button */
@@ -65,8 +85,25 @@ function viewAllCtrl($scope, EmployeeService){
 	/* Change Status by clicking on Active/Inactive Button */
 	$scope.changeStatus= function(id,status){
 		console.log("Delete Emp-->Id:"+id+"Status:"+status);
-		EmployeeService.changeStatus($scope,id);
+		/*EmployeeService.changeStatus($scope,id);*/
+		$http.put('/emp/api/changeStatus/'+id).then(function successCallback(response){
+			/*$scope.msg=response.data.message;*/
+			var respData=response.data;
+			
+			if(respData.status=='OK'){ // responseStatus=OK
+				toastr.info(respData.message);
+				console.log("Successfully");
+			}else if(respData.status=='INTERNAL_SERVER_ERROR'){ // responseStatus=INTERNAL_SERVER_ERROR
+				toastr.error(respData.message);
+				console.log("NOT FOUND");
+			}
+		},function errorCallback(response){
+			$scope.msg=response.status+":"+response.data;
+		});
 		console.log($scope.msg);
-		window.location.reload();
+		$timeout(function() {
+			/*window.location.reload();*/
+			$route.reload();
+		}, 1000);
 	}
 }

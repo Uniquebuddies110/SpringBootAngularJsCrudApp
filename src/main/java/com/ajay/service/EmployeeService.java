@@ -27,9 +27,13 @@ public class EmployeeService {
 	 * 
 	 * @return List<Employee>
 	 */
-	public List<Employee> getAllEmployees() {
+	public Payload getAllEmployees() {
 		log.info("EmployeeService.getAllEmployees()");
-		return employeeRepo.findAll(Sort.by("status").descending());
+		List<Employee> employees = employeeRepo.findAll(Sort.by("status").descending());
+		if (!employees.isEmpty()) {
+			return new Payload("Success", HttpStatus.OK, employees);
+		}
+		return new Payload("Error", HttpStatus.INTERNAL_SERVER_ERROR, null);
 	}
 
 	/**
@@ -39,13 +43,14 @@ public class EmployeeService {
 	 * @return Employee
 	 * @throws Exception
 	 */
-	public Employee getEmpById(Integer id) throws Exception {
+	public Payload getEmpById(Integer id) throws Exception {
 		log.info("EmployeeService.getEmpById()");
 		Optional<Employee> opt = employeeRepo.findById(id);
 		if (opt.isPresent()) {
-			return opt.get();
+			Employee employee = opt.get();
+			return new Payload("Success", HttpStatus.OK, employee);
 		} else {
-			throw new Exception("No Data Found.");
+			return new Payload("Success", HttpStatus.INTERNAL_SERVER_ERROR, null);
 		}
 	}
 
@@ -57,10 +62,16 @@ public class EmployeeService {
 	 */
 	public Payload saveEmployee(Employee employee) {
 		log.info("EmployeeService.saveEmployee()");
+		Payload payload = null;
 		employee.setStatus(1);
-		employee = employeeRepo.save(employee);
-		String msg= "Employee '" + employee.getName() + "' has Added successfully.";
-		return new Payload(msg, HttpStatus.OK, null);
+		try {
+			employee = employeeRepo.save(employee);
+			String msg = "Employee '" + employee.getName() + "' has Added successfully.";
+			payload = new Payload(msg, HttpStatus.OK, null);
+		} catch (Exception e) {
+			payload = new Payload("Error", HttpStatus.INTERNAL_SERVER_ERROR, null);
+		}
+		return payload;
 	}
 
 	/**
@@ -70,18 +81,21 @@ public class EmployeeService {
 	 * @return String
 	 * @throws Exception
 	 */
-	public String updateEmployee(Employee employee) throws Exception {
+	public Payload updateEmployee(Employee employee) throws Exception {
 		log.info("EmployeeService.updateEmployee()");
 		if (employee.getId() != null) {
 			Optional<Employee> opt = employeeRepo.findById(employee.getId());
 			if (opt.isPresent() && opt.get().getStatus() == 1) {
 				employee.setStatus(1);
 				employee = employeeRepo.save(employee);
-				return "Employee '" + employee.getName() + "' has Updated successfully.";
+				String msg = "Employee '" + employee.getName() + "' has Updated successfully.";
+				return new Payload(msg, HttpStatus.OK, null);
 			}
-			throw new Exception("Data not Found.");
+			log.error("Data not Found.");
+			return new Payload("Data not Found.", HttpStatus.INTERNAL_SERVER_ERROR, null);
 		}
-		throw new Exception("Error Found! Please try Again!!");
+		log.error("Error Found! Please try Again!!");
+		return new Payload("Error Found! Please try Again!!", HttpStatus.INTERNAL_SERVER_ERROR, null);
 	}
 
 	/**
@@ -91,19 +105,23 @@ public class EmployeeService {
 	 * @return String
 	 * @throws Exception
 	 */
-	public String deleteEmployee(Integer id) throws Exception {
+	public Payload deleteEmployee(Integer id) throws Exception {
 		log.info("EmployeeService.deleteEmployee()");
+		String msg = "";
 		if (id != null) {
 			Optional<Employee> opt = employeeRepo.findById(id);
 			if (opt.isPresent()) {
 				Employee employee = opt.get();
 				employee.setStatus(0);
 				employee = employeeRepo.save(employee);
-				return "Employee '" + employee.getName() + "' has Updated successfully.";
+				msg = "Employee '" + employee.getName() + "' has Updated successfully.";
+				return new Payload(msg, HttpStatus.OK, null);
 			}
-			throw new Exception("Data not Found.");
+			msg = "Data not Found.";
+			return new Payload(msg, HttpStatus.INTERNAL_SERVER_ERROR, null);
 		}
-		throw new Exception("Error Found! Please try Again!!");
+		msg = "Error Found! Please try Again!!";
+		return new Payload(msg, HttpStatus.INTERNAL_SERVER_ERROR, null);
 	}
 
 	/**
@@ -113,8 +131,9 @@ public class EmployeeService {
 	 * @return String
 	 * @throws Exception
 	 */
-	public String changeStatus(Integer id) throws Exception {
+	public Payload changeStatus(Integer id) throws Exception {
 		log.info("EmployeeService.changeStatus()");
+		String msg = "";
 		if (id != null) {
 			Optional<Employee> opt = employeeRepo.findById(id);
 			if (opt.isPresent()) {
@@ -125,11 +144,14 @@ public class EmployeeService {
 					employee.setStatus(0);
 				}
 				employee = employeeRepo.save(employee);
-				return "Employee '" + employee.getName() + "' has Updated Status successfully.";
+				msg = "Employee '" + employee.getName() + "' has Updated Status successfully.";
+				return new Payload(msg, HttpStatus.OK, null);
 			}
-			throw new Exception("Data not Found.");
+			msg = "Data not Found.";
+			return new Payload(msg, HttpStatus.INTERNAL_SERVER_ERROR, null);
 		}
-		throw new Exception("Error Found! Please try Again!!");
+		msg = "Error Found! Please try Again!!";
+		return new Payload(msg, HttpStatus.INTERNAL_SERVER_ERROR, null);
 	}
 
 }
